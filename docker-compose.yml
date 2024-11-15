@@ -1,0 +1,7 @@
+
+services:
+  django-starter:
+    image: django-starter
+    env_file:
+      - .env
+    command: .django_starter.sh $PROJECT_NAME
