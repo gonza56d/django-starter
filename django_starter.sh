@@ -42,4 +42,8 @@ ALLOWED_HOSTS = []" >> $1/config/settings/production.py
 ## create env files
 touch .env
 touch .env.copy
+echo "DJANGO_SECRET_KEY=" >> .env.copy
+echo "DJANGO_SECRET_KEY=" >> .env
 
+## run python script
+python3 django_starter.py $1
