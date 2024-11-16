@@ -62,7 +62,7 @@ def main():
 
     with open('.env', 'r') as env:
         content = env.read()
-    new_content = content.replace('SECRET_KEY=', F'SECRET_KEY={SECRET_KEY}')
+    new_content = content.replace('SECRET_KEY=', f'SECRET_KEY={SECRET_KEY}')
     with open('.env', 'w') as env:
         env.write(new_content)
 
