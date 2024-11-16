@@ -10,4 +10,4 @@ Execute `./django_starter.sh <project_name>` and wait for magic to happen. Once 
 
 ## Troubleshooting
 Make sure to use only letters and underscores for your poject name.
-If something goes wrong, delete everything except by `django_starter.sh` and `django_starter.py`.
+If something goes wrong, delete everything except by `django_starter.sh` and `django_starter.py`. (Note that also .env and .env.copy files could've been created, delete these too).
