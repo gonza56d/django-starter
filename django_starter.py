@@ -1,12 +1,15 @@
 import re
 from sys import argv
 
+from django.core.management.utils import get_random_secret_key
+
 
 PROJECT_NAME = argv[1]
 SETTINGS_BASE = f'{PROJECT_NAME}/config/settings/base.py'
 
 
 def main():
+    SECRET_KEY = get_random_secret_key()
     with open(SETTINGS_BASE, 'r') as settings_base:
         content = settings_base.read()
     new_content = re.sub(r"SECRET_KEY\s*=\s*'.*?'", "SECRET_KEY = environ.get('DJANGO_SECRET_KEY')", content)
@@ -56,6 +59,12 @@ def main():
     )
     with open('manage.py', 'w') as manage_py:
         manage_py.write(content)
+
+    with open('.env', 'r') as env:
+        content = env.read()
+    new_content = content.replace('SECRET_KEY=', F'SECRET_KEY={SECRET_KEY}')
+    with open('.env', 'w') as env:
+        env.write(new_content)
 
 
 if __name__ == '__main__':
