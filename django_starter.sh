@@ -39,11 +39,56 @@ echo "from .base import *
 
 DEBUG = False
 ALLOWED_HOSTS = []" >> $1/config/settings/production.py
+## user model override
+mkdir $1/users
+touch $1/users/__init__.py 
+touch $1/users/apps.py 
+touch $1/users/models.py 
+echo "from django.apps import AppConfig
+
+
+class UsersConfig(AppConfig):
+    name = '$1.users'
+    verbose_name = 'Users'" >> $1/users/apps.py 
+echo "from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
+
+
+class UserManager(BaseUserManager):
+
+    def create_user(self, email: str, password: str, is_admin: bool = False):
+        user = User(email=email, is_staff=is_admin, is_superuser=is_admin)
+        user.set_password(password)
+        user.save()
+
+
+class User(AbstractUser):
+
+    username = None
+    email = models.EmailField(unique=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()" >> $1/users/models.py 
+
 ## create env files
 touch .env
 touch .env.copy
-echo "DJANGO_SECRET_KEY=" >> .env.copy
-echo "DJANGO_SECRET_KEY=" >> .env
+echo "DJANGO_SECRET_KEY=
+DJANGO_SETTINGS_MODULE=$1.config.settings.local" >> .env.copy
+echo "DJANGO_SECRET_KEY=
+DJANGO_SETTINGS_MODULE=$1.config.settings.local" >> .env
+
+## requirements
+touch requirements.txt
+echo "Django==5.1.3
+python-dotenv==1.0.1" >> requirements.txt
+pip3 install python-dotenv==1.0.1
 
 ## run python script
 python3 django_starter.py $1
+python3 manage.py makemigrations users
+python3 manage.py migrate
+echo "\n\n*** DJANGO STARTER ***"
+echo "Project created"
+echo "**********************"
