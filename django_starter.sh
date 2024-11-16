@@ -128,13 +128,16 @@ touch Dockerfile
 touch docker-compose.yml
 echo "FROM python:3.10-slim
 
+# Upgrade pip and set work directory
 RUN pip install --upgrade pip
 WORKDIR /app
 
-RUN mkdir -p app
-ADD requirements.txt app
-RUN pip install -r app/requirements.txt
-ADD app app" >> Dockerfile
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy the rest of the application code
+COPY . ." >> Dockerfile
 echo "services:
 
   $1:
